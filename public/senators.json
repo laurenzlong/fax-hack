@@ -1,5 +1,16 @@
 [
   {
+    "key": "TEST",
+    "last_name": "TEST",
+    "state": "TEST",
+    "first_name": "TEST",
+    "party": "R",
+    "fax": 2022284276,
+    "formatted_fax": "+14153585740",
+    "birthday": "May 22",
+    "sun_sign": "Gemini"
+  },
+  {
     "key": "MurkowskiAK",
     "last_name": "Murkowski",
     "state": "AK",
