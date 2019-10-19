@@ -14,6 +14,7 @@
     <script defer src="/__/firebase/7.2.1/firebase-storage.js"></script>
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
     <style media="screen">
       body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
@@ -32,12 +33,10 @@
   </head>
   <body>
     <div id="message">
-      <h2>text someone</h2>
-      <h1>lol</h1>
-      <p>ayyy</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+      <label for="state-select">Choose your state:</label>
+      <select name="states" id="state-select">
+      </select>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
@@ -51,15 +50,30 @@
         //
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 
+        function create_state_selector() {
+          $.getJSON("/states_titlecase.json", function(data) {
+            $('#state-select').append(
+              data.map(function(state) {
+                return $('<option/>', {
+                  value: state.abbreviation,
+                  text: state.name,
+                });
+              })
+            );
+          });
+        };
+
         try {
           let app = firebase.app();
           let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+          create_state_selector();
         } catch (e) {
           console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
         }
+
       });
+
+
     </script>
   </body>
 </html>
