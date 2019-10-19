@@ -36,23 +36,68 @@
       <label for="state-select">Choose your state:</label>
       <select name="states" id="state-select">
       </select>
+
+      <div id="state-selected">
+      </div>
     </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      // // The Firebase SDK is initialized and available here!
+      //
+      // firebase.auth().onAuthStateChanged(user => { });
+      // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+      // firebase.messaging().requestPermission().then(() => { });
+      // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+      //
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 
-        function create_state_selector() {
+      /**
+       * MAIN APP CODE
+       */
+      const app = {
+
+        $stateSelect: undefined,
+        $stateSelected: undefined,
+
+        /**
+         * Kick off the app
+         */
+        go: () => {
+          app.createListeners();
+          app.createStateSelector();
+        },
+
+        /**
+         * Create listeners and establish jquery objects
+         */
+        createListeners: () => {
+          app.$stateSelect = $('#state-select');
+          app.$stateSelect.change(app.selectYourState);
+
+          app.$stateSelected = $('#state-selected');
+        },
+
+        selectYourState: () => {
+          // GET SELECTED STATE
+          const state = $("#state-select option:selected").val(); // ex. "AR"
+
+          // FIGURE OUT SENATORS & FAX #s
+
+          //  UPDATE UI
+          app.$stateSelected.html(`
+            <p>Your state: ${state}</p>
+            <p>Your senators: $SENATORS</p>
+            <button>Send horoscope</button>
+          `);
+        },
+
+        /**
+         * Creates state selector on homepage
+         */
+        createStateSelector: () => {
           $.getJSON("/states_titlecase.json", function(data) {
-            $('#state-select').append(
+            app.$stateSelect.append(
               data.map(function(state) {
                 return $('<option/>', {
                   value: state.abbreviation,
@@ -61,19 +106,12 @@
               })
             );
           });
-        };
+        },
+      };
 
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          create_state_selector();
-        } catch (e) {
-          console.error(e);
-        }
-
+      document.addEventListener('DOMContentLoaded', function() {
+        app.go();
       });
-
-
     </script>
   </body>
 </html>
