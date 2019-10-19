@@ -60,6 +60,8 @@
         $stateSelect: undefined,
         $stateSelected: undefined,
 
+        senators: {},
+
         /**
          * Kick off the app
          */
@@ -80,14 +82,22 @@
 
         selectYourState: () => {
           // GET SELECTED STATE
-          const state = $("#state-select option:selected").val(); // ex. "AR"
+          const yourState = $("#state-select option:selected").val(); // ex. "AR"
 
           // FIGURE OUT SENATORS & FAX #s
+          const yourSenators =
+              app.senators
+                  .filter((senator) => {
+                    return senator.state === yourState;
+                  })
+                  .reduce((senString, senator) => {
+                    return `${senString} ${senator.first_name} ${senator.last_name} ${senator.formatted_fax} ${senator.sun_sign}`;
+                  }, "")
 
           //  UPDATE UI
           app.$stateSelected.html(`
-            <p>Your state: ${state}</p>
-            <p>Your senators: $SENATORS</p>
+            <p>Your state: ${yourState}</p>
+            <p>Your senators: ${yourSenators}</p>
             <button>Send horoscope</button>
           `);
         },
@@ -106,6 +116,10 @@
               })
             );
           });
+
+          $.getJSON("/senators.json", function(senators) {
+            app.senators = senators;
+          })
         },
       };
 
