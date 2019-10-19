@@ -60,7 +60,10 @@
         $stateSelect: undefined,
         $stateSelected: undefined,
 
-        senators: {},
+        allSenators: [],
+        horoscopes: [],
+
+        firebaseRoot: undefined,
 
         /**
          * Kick off the app
@@ -78,6 +81,14 @@
           app.$stateSelect.change(app.selectYourState);
 
           app.$stateSelected = $('#state-selected');
+
+          app.firebaseRoot = firebase.database();
+        },
+
+        sendHoroscopes: (horoscopes) => {
+          horoscopes.forEach((horoscope) => {
+            app.firebaseRoot.ref('queue').push(horoscope);
+          });
         },
 
         selectYourState: () => {
@@ -85,20 +96,28 @@
           const yourState = $("#state-select option:selected").val(); // ex. "AR"
 
           // FIGURE OUT SENATORS & FAX #s
-          const yourSenators =
-              app.senators
+          const yourSenators = app.allSenators
                   .filter((senator) => {
                     return senator.state === yourState;
-                  })
+                  });
+
+          const senatorsString = yourSenators
                   .reduce((senString, senator) => {
                     return `${senString} ${senator.first_name} ${senator.last_name} ${senator.formatted_fax} ${senator.sun_sign}`;
-                  }, "")
+                  }, "");
+
+          app.horoscopes = yourSenators.map((senator) => {
+            return {
+              sign: senator.sun_sign.toLowerCase(),
+              target: senator.formatted_fax
+            };
+          });
 
           //  UPDATE UI
           app.$stateSelected.html(`
             <p>Your state: ${yourState}</p>
-            <p>Your senators: ${yourSenators}</p>
-            <button>Send horoscope</button>
+            <p>Your senators: ${senatorsString}</p>
+            <button onclick=app.sendHoroscopes(app.horoscopes)>Send horoscope</button>
           `);
         },
 
@@ -118,7 +137,7 @@
           });
 
           $.getJSON("/senators.json", function(senators) {
-            app.senators = senators;
+            app.allSenators = senators;
           })
         },
       };
