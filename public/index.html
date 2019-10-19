@@ -33,6 +33,7 @@
   </head>
   <body>
     <div id="message">
+      <h1>Fax your senator their horoscope</h1>
       <label for="state-select">Choose your state:</label>
       <select name="states" id="state-select">
       </select>
@@ -42,16 +43,6 @@
     </div>
 
     <script>
-      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-      // // The Firebase SDK is initialized and available here!
-      //
-      // firebase.auth().onAuthStateChanged(user => { });
-      // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-      // firebase.messaging().requestPermission().then(() => { });
-      // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-      //
-      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
       /**
        * MAIN APP CODE
        */
@@ -60,17 +51,17 @@
         $stateSelect: undefined,
         $stateSelected: undefined,
 
+        firebaseRoot: undefined,
+
         allSenators: [],
         horoscopes: [],
-
-        firebaseRoot: undefined,
 
         /**
          * Kick off the app
          */
         go: () => {
           app.createListeners();
-          app.createStateSelector();
+          app.fetchData();
         },
 
         /**
@@ -102,9 +93,18 @@
                   });
 
           const senatorsString = yourSenators
-                  .reduce((senString, senator) => {
-                    return `${senString} ${senator.first_name} ${senator.last_name} ${senator.formatted_fax} ${senator.sun_sign}`;
-                  }, "");
+                  .map((senator) => {
+                    return `
+                      <li>${senator.first_name} ${senator.last_name}</li>
+                      <ul>
+                        <li>Fax number: ${senator.formatted_fax || "No fax :("}</li>
+                        <li>Sun sign: ${senator.sun_sign}</li>
+                      </ul>
+                    `;
+                  })
+                  .reduce((senString, senatorHTML) => {
+                    return `${senString} ${senatorHTML}`;
+                  }, `<ul>`) + "</ul>";
 
           app.horoscopes = yourSenators.map((senator) => {
             return {
@@ -114,17 +114,26 @@
           });
 
           //  UPDATE UI
+
+          const horoscopeButton =
+            yourSenators.reduce((hasFax, senator) => {
+              return hasFax ? true : senator.formatted_fax;
+            }, false) ?
+                `<button onclick=app.sendHoroscopes(app.horoscopes)>
+                  Send horoscope
+                </button>` :
+                ``;
+
           app.$stateSelected.html(`
-            <p>Your state: ${yourState}</p>
             <p>Your senators: ${senatorsString}</p>
-            <button onclick=app.sendHoroscopes(app.horoscopes)>Send horoscope</button>
+            ${horoscopeButton}
           `);
         },
 
         /**
          * Creates state selector on homepage
          */
-        createStateSelector: () => {
+        fetchData: () => {
           $.getJSON("/states_titlecase.json", function(data) {
             app.$stateSelect.append(
               data.map(function(state) {
