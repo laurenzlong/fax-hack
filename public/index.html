@@ -40,6 +40,9 @@
 
       <div id="state-selected">
       </div>
+
+      <div id="status">
+      </div>
     </div>
 
     <script>
@@ -50,6 +53,7 @@
 
         $stateSelect: undefined,
         $stateSelected: undefined,
+        $status: undefined,
 
         firebaseRoot: undefined,
 
@@ -69,17 +73,35 @@
          */
         createListeners: () => {
           app.$stateSelect = $('#state-select');
-          app.$stateSelect.change(app.selectYourState);
-
           app.$stateSelected = $('#state-selected');
+          app.$status = $("#status");
+
+          app.$stateSelect.change(app.selectYourState);
 
           app.firebaseRoot = firebase.database();
         },
 
         sendHoroscopes: (horoscopes) => {
+          let faxRecipients = ``;
           horoscopes.forEach((horoscope) => {
             app.firebaseRoot.ref('queue').push(horoscope);
+
+            let senatorRecipient = app.allSenators.filter((senator) => {
+              if (senator.formatted_fax === "") return false;
+              return senator.formatted_fax === horoscope.target;
+            })[0];
+
+
+            if (senatorRecipient) {
+              if (faxRecipients.length > 0) {
+                faxRecipients += ` and ${senatorRecipient.first_name} ${senatorRecipient.last_name}`;
+              } else {
+                faxRecipients += `${senatorRecipient.first_name} ${senatorRecipient.last_name}`;
+              }
+            }
           });
+
+          app.$status.text(`Success! You just faxed ${faxRecipients} their horoscope!`);
         },
 
         selectYourState: () => {
