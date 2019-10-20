@@ -56,6 +56,7 @@
         $status: undefined,
 
         firebaseRoot: undefined,
+        firebaseStorage: undefined,
 
         allSenators: [],
         horoscopes: [],
@@ -79,6 +80,7 @@
           app.$stateSelect.change(app.selectYourState);
 
           app.firebaseRoot = firebase.database();
+          app.firebaseStorage = firebase.storage();
         },
 
         sendHoroscopes: (horoscopes) => {
@@ -90,7 +92,6 @@
               if (senator.formatted_fax === "") return false;
               return senator.formatted_fax === horoscope.target;
             })[0];
-
 
             if (senatorRecipient) {
               if (faxRecipients.length > 0) {
@@ -156,9 +157,9 @@
          * Creates state selector on homepage
          */
         fetchData: () => {
-          $.getJSON("/states_titlecase.json", function(data) {
+          $.getJSON("/states_titlecase.json", (data) => {
             app.$stateSelect.append(
-              data.map(function(state) {
+              data.map((state) => {
                 return $('<option/>', {
                   value: state.abbreviation,
                   text: state.name,
@@ -167,13 +168,13 @@
             );
           });
 
-          $.getJSON("/senators.json", function(senators) {
+          $.getJSON("/senators.json", (senators) => {
             app.allSenators = senators;
-          })
+          });
         },
       };
 
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', () => {
         app.go();
       });
     </script>

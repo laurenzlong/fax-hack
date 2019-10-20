@@ -1,27 +1,5 @@
 [
   {
-    "key": "TEST-1",
-    "last_name": " virtual fax number)",
-    "state": "TEST",
-    "first_name": "(Lauren's",
-    "party": "R",
-    "fax": 2022284276,
-    "formatted_fax": "+14153585740",
-    "birthday": "May 22",
-    "sun_sign": "Gemini"
-  },
-  {
-    "key": "TEST-2",
-    "last_name": "Max (Mission, SF)",
-    "state": "TEST",
-    "first_name": "Office",
-    "party": "R",
-    "fax": 2022284276,
-    "formatted_fax": "+14152529930",
-    "birthday": "November 13",
-    "sun_sign": "Scorpio"
-  },
-  {
     "key": "MurkowskiAK",
     "last_name": "Murkowski",
     "state": "AK",
@@ -1120,27 +1098,5 @@
     "formatted_fax": "+12022280359",
     "birthday": "February 1",
     "sun_sign": "Aquarius"
-  },
-  {
-    "key": "MaxCA",
-    "last_name": "Max",
-    "state": "CA",
-    "first_name": "Office",
-    "party": "T",
-    "fax": 4152529930,
-    "formatted_fax": "+14152529930",
-    "birthday": "August 13",
-    "sun_sign": "Leo"
-  },
-  {
-    "key": "FaxCA",
-    "last_name": "Fax",
-    "state": "CA",
-    "first_name": "Self",
-    "party": "T",
-    "fax": 4153585740,
-    "formatted_fax": "+14153585740",
-    "birthday": "November 20",
-    "sun_sign": "Scorpio"
   }
 ]
